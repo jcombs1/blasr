@@ -171,11 +171,12 @@ int AlignmentToGuide(Alignment &alignment, Guide &guide, int bandSize)  {
 															 guide[guideIndex-1].tPre));
 				guide[guideIndex].tPre  = min(bandSize, fullLengthTPre);
 				guide[guideIndex].tPost = bandSize;
-        if (guide[guideIndex].tPre > 500 or guide[guideIndex].tPost > 500) {
+/*        if (guide[guideIndex].tPre > 500 or guide[guideIndex].tPost > 500) {
           cout << guideIndex << " " << guide[guideIndex].tPre << " " << guide[guideIndex].tPost << endl;
         }
         assert(guide[guideIndex].tPre >= 0);
         assert(guide[guideIndex].tPost >= 0);
+        */
 			}
 			guideIndex++;
 		}
@@ -195,7 +196,7 @@ int AlignmentToGuide(Alignment &alignment, Guide &guide, int bandSize)  {
 			// Drift is how far from the diagonal the next block starts at.
 			//
 			drift           = ComputeDrift(alignment.blocks[b], alignment.blocks[b+1]);
-      drift = min(drift, 100);
+            //drift = min(drift, 100);
 			diagonalLength  = min(qGap, tGap);
 			
 			int diagPos;
@@ -214,9 +215,9 @@ int AlignmentToGuide(Alignment &alignment, Guide &guide, int bandSize)  {
 				guide[guideIndex].tPre  = (guide[guideIndex].t - 
                                    (guide[guideIndex-1].t - guide[guideIndex-1].tPre)); 
 				guide[guideIndex].tPost = bandSize + abs(drift);
-        if (guide[guideIndex].tPre > 500 or guide[guideIndex].tPost > 500) {
+/*        if (guide[guideIndex].tPre > 500 or guide[guideIndex].tPost > 500) {
           cout << guideIndex << " " << guide[guideIndex].tPre << " " << guide[guideIndex].tPost << endl;
-        }
+        } */
 				++guideIndex;
 			}
 			
@@ -230,7 +231,7 @@ int AlignmentToGuide(Alignment &alignment, Guide &guide, int bandSize)  {
 			//  * *
 			//  *  *
 			//  *   * // extend down from here.
-			//  *   *
+		//  *   *
 			//  *   * 
 			//
 
@@ -248,11 +249,11 @@ int AlignmentToGuide(Alignment &alignment, Guide &guide, int bandSize)  {
 			}
 		}
 	}
-  int i;
-  for (i = 0; i < guide.size(); i++) {
-    guide[i].tPre = min(guide[i].tPre, 200);
-    guide[i].tPost = min(guide[i].tPost, 200);
-  }
+  //int i;
+  //for (i = 0; i < guide.size(); i++) {
+  //  guide[i].tPre = min(guide[i].tPre, 200);
+  //  guide[i].tPost = min(guide[i].tPost, 200);
+  // }
   return 1; // signal ok.
 }
 
@@ -292,7 +293,7 @@ template<typename QSequence, typename TSequence, typename T_ScoreFn>
 	Guide guide;
 	AlignmentToGuide(guideAlignment, guide, bandSize);
 	StoreMatrixOffsets(guide);
-
+    int guideSize = ComputeMatrixNElem(guide);
 
 	//
 	// Make a copy of the sequences that is guaranteed to be in 3-bit format for faster alignment.
@@ -304,7 +305,7 @@ template<typename QSequence, typename TSequence, typename T_ScoreFn>
 	tSeq.Assign(origTSeq);
 	
 	int matrixNElem = ComputeMatrixNElem(guide);
-  assert(matrixNElem >= 0);
+    assert(matrixNElem >= 0);
 	StoreMatrixOffsets(guide);
 
   /*
